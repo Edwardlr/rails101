@@ -13,6 +13,35 @@ class PostsController < ApplicationController
     @post.group = @group
     @post.user = current_user
 
+    def update
+      @group = Group.find(params[:group_id])
+      @post = Post.find(params[:id])
+      @post.group = @group
+      @post.user = current_user
+
+      if @post.update(post_params)
+  redirect_to account_posts_path, notice: "編輯成功"
+else
+  render :edit
+end
+  end
+
+    def edit
+      @group = Group.find(params[:group_id])
+      @post = Post.find(params[:id])
+      @post.group = @group
+
+    end
+
+    def destroy
+        @group = Group.find(params[:group_id])
+        @post = Post.find(params[:id])
+        @post.group = @group
+        @post.destroy
+        flash[:alert] = "Post deleted"
+        redirect_to account_posts_path
+      end
+
     if @post.save
       redirect_to group_path(@group)
     else
@@ -22,6 +51,7 @@ class PostsController < ApplicationController
 
 
   private
+
 
   def post_params
     params.require(:post).permit(:content)
